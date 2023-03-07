@@ -1,0 +1,15 @@
+# Настройки ORM
+datasource:
+  # Задаём базу данных, к которой будет происходить подключение
+  development:
+    username: ""
+    password: ""
+    url: "jdbc:h2:./pageAnalizator"
+  production:
+    username: other_username
+    password: ${otherPassword}
+    url: jdbc:postgresql://${otherDatabaseHost}:5432/pageAnalizator
+
+  ebean:
+  migration:
+    run: true       # run database migrations on startup
