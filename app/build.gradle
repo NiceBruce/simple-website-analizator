@@ -36,6 +36,7 @@ dependencies {
     implementation 'io.ebean:ebean-migration:13.7.0'
     implementation 'io.ebean:ebean-annotation:8.3'
     implementation 'com.h2database:h2:2.1.214'
+    implementation 'org.postgresql:postgresql:42.5.4'
     annotationProcessor 'io.ebean:querybean-generator:13.14.1'
 
 //    позволяет создавать общие макеты и clear

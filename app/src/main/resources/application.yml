@@ -8,19 +8,14 @@ datasource:
   production:
     username: ${JDBC_DATABASE_USERNAME}
     password: ${JDBC_DATABASE_PASSWORD}
-    url: ${DATABASE_URL}
+    url: ${JDBC_DATABASE_URL}
 
 ebean:
   development:
     migration:
-      run: false
+      run: true
   production:
     migration:
       run: true
-
-#ebean:
-#  development:
-#    migrarion:
-#      run: true
 
 
