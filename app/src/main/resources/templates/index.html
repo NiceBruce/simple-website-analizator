@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/application.html}">
 
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -12,8 +13,24 @@
 <section style="padding-top: 200px" layout:fragment="content">
   <div>
     <p>
-    <h1 style="text-align: center">Hello, Boris:)</h1>
+    <h1 style="text-align: center">Анализатор страниц</h1>
     </p>
+    <div class="mb-3">
+      <label>Бесплатно проверяйте сайты на SEO пригодность</label>
+      <form class="row g-3" action="/urls" method="post">
+        <div class="col-auto">
+          <label for="inputUrl" class="visually-hidden">url</label>
+          <input
+                  class="form-control"
+                  type="text" name="url" th:value="*{url}"
+                  id="inputUrl" placeholder="url"
+          >
+        </div>
+        <div class="col-auto">
+          <button class="btn btn-primary mb-3" type="submit">Check</button>
+        </div>
+      </form>
+    </div>
   </div>
 </section>
 </body>

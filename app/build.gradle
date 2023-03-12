@@ -2,11 +2,7 @@ plugins {
     id 'application'
     id 'com.adarshr.test-logger' version '3.0.0'
     id 'checkstyle'
-    id 'io.ebean' version '13.6.5'
-}
-
-application {
-    mainClass = 'hexlet.code.App'
+    id 'io.ebean' version '13.14.1'
 }
 
 group 'hexlet.code'
@@ -14,6 +10,15 @@ version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
+}
+
+compileJava {
+    options.release = 17
+    options.encoding = 'UTF-8'
+}
+
+application {
+    mainClass = 'hexlet.code.App'
 }
 
 dependencies {
@@ -25,15 +30,16 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 
-    implementation 'io.ebean:ebean:13.11.0'
-    implementation 'io.ebean:ebean-ddl-generator:13.11.0'
-    implementation 'io.ebean:ebean-querybean:13.11.0'
-    implementation 'io.ebean:ebean-migration:13.6.2'
+    implementation 'io.ebean:ebean:13.14.1'
+    implementation 'io.ebean:ebean-ddl-generator:13.14.1'
+    implementation 'io.ebean:ebean-querybean:13.14.1'
+    implementation 'io.ebean:ebean-migration:13.7.0'
     implementation 'io.ebean:ebean-annotation:8.3'
-    implementation 'com.h2database:h2:1.4.200'
-    annotationProcessor 'io.ebean:querybean-generator:13.11.0'
+    implementation 'com.h2database:h2:2.1.214'
+    annotationProcessor 'io.ebean:querybean-generator:13.14.1'
 
-//    позволяет создавать общие макеты и переиспользовать их
+//    позволяет создавать общие макеты и clear
+//    переиспользовать их
     implementation 'org.thymeleaf:thymeleaf:3.1.1.RELEASE'
     implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.2.0'
 //    добавляет в шаблоны объект temporals со множеством полезных методов по форматированию
@@ -42,17 +48,15 @@ dependencies {
 //    оформлениe страниц веб-приложения
     implementation 'org.webjars:bootstrap:5.2.3'
 
-    implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.5'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.8'
     implementation 'javax.activation:activation:1.1.1'
+
+    testImplementation 'io.ebean:ebean-test:13.14.1'
 
 }
 
 test {
     useJUnitPlatform()
-}
-
-compileJava {
-    options.release = 17
 }
 
 checkstyle {
@@ -66,9 +70,3 @@ task generateMigrations(type: JavaExec) {
 
 task stage(dependsOn: ['clean', 'installDist'])
 installDist.mustRunAfter clean
-
-//tasks.withType(JavaCompile) {
-//    options.encoding = "UTF-8"
-//}
-//
-//sourceSets.main.java.srcDirs = ['src/main/java', 'build/generated/sources/annotationProcessor/java/main']

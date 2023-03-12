@@ -1,15 +1,26 @@
 # Настройки ORM
 datasource:
-  # Задаём базу данных, к которой будет происходить подключение
+  default: ${APP_ENV}
   development:
-    username: ""
-    password: ""
-    url: "jdbc:h2:./pageAnalizator"
+    username: sa
+    password: sa
+    url: "jdbc:h2:./database"
   production:
-    username: other_username
-    password: ${otherPassword}
-    url: jdbc:postgresql://${otherDatabaseHost}:5432/pageAnalizator
+    username: ${JDBC_DATABASE_USERNAME}
+    password: ${JDBC_DATABASE_PASSWORD}
+    url: ${DATABASE_URL}
 
-  ebean:
-  migration:
-    run: true       # run database migrations on startup
+ebean:
+  development:
+    migration:
+      run: false
+  production:
+    migration:
+      run: true
+
+#ebean:
+#  development:
+#    migrarion:
+#      run: true
+
+

@@ -25,14 +25,12 @@ public class Url extends Model {
     @WhenCreated
     Instant createdAt;
 
-    public Url(long id, String name, Instant createdAt) {
-        this.id = id;
+    public Url(String name) {
         this.name = name;
-        this.createdAt = createdAt;
     }
 
     public long getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(long id) {
@@ -40,7 +38,7 @@ public class Url extends Model {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {

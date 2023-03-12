@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/application.html}">
+
+<head>
+  <title>Urls</title>
+</head>
+<section layout:fragment="content">
+  <table class="table">
+    <thead>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Last check</th>
+      <th>Ansver's Code</th>
+    </thead>
+    <tbody>
+      <tr th:each="url : ${urls}" th:object="${url}">
+        <td th:text="*{id}"></td>
+        <td>
+          <a th:text="*{name}" th:href="@{/urls/{id}(id=*{id})}"></a>
+        </td>
+        <td th:text="*{#temporals.format(createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+

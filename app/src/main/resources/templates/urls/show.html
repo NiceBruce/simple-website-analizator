@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{layouts/application.html}">
+
+<head>
+  <title>Show URL</title>
+</head>
+<section layout:fragment="content">
+  <h1 th:text="'Сайт  ' + ${url.name}">Name url's</h1>
+  <table class="table table-bordered">
+    <tbody>
+    <tr>
+      <td>Id</td><td th:text="*{url.id}">1</td>
+    </tr>
+    <tr>
+      <td>Url's name</td><td th:text="*{url.name}">2</td>
+    </tr>
+    <tr>
+      <td>Date of create</td><td th:text="${#temporals.format(url.createdAt, 'dd/MM/yyyy HH:mm')}">3</td>
+    </tr>
+    </tbody>
+  </table>
+</section>
