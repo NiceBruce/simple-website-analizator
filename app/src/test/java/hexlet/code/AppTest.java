@@ -16,7 +16,7 @@ import hexlet.code.domain.Url;
 import hexlet.code.domain.query.QUrl;
 import io.ebean.Database;
 
-public class AppTest {
+public final class AppTest {
     private static Javalin app;
     private static String baseUrl;
 

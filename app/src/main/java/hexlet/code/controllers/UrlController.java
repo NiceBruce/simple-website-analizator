@@ -7,8 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-public class UrlController {
-
+public final class UrlController {
     public static boolean isValidUrl(String url) throws MalformedURLException {
         try {
             new URL(url);
@@ -26,6 +25,7 @@ public class UrlController {
     }
 
     public static Handler listUrl = ctx -> {
+
         List<Url> urls = new QUrl()
                 .orderBy()
                     .id.asc()
@@ -36,6 +36,7 @@ public class UrlController {
     };
 
     public static Handler showUrl = ctx -> {
+
         long id = ctx.pathParamAsClass("id", Long.class).getOrDefault(null);
 
         Url url = new QUrl()
@@ -47,6 +48,7 @@ public class UrlController {
     };
 
     public static Handler createUrl = ctx -> {
+
         String urlsNameFromForm = ctx.formParam("url");
 
         if (isValidUrl(urlsNameFromForm)) {
