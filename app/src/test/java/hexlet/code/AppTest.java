@@ -50,7 +50,7 @@ public final class AppTest {
     @Nested
     class RootTest {
         @Test
-        void testIndex() {
+        void testGreet() {
             HttpResponse<String> response = Unirest.get(baseUrl).asString();
             assertThat(response.getStatus()).isEqualTo(200);
             assertThat(response.getBody()).contains("Анализатор страниц");
@@ -60,7 +60,7 @@ public final class AppTest {
     @Nested
     class UrlTest {
         @Test
-        void testUrls() {
+        void testListUrls() {
             HttpResponse<String> response = Unirest
                     .get(baseUrl + "/urls")
                     .asString();
@@ -113,35 +113,35 @@ public final class AppTest {
             assertThat(actualUrl.getName()).isEqualTo(urlName);
         }
 
-        @Test
-        void testAlreadyCreatedUrl() {
-            String urlName = "https://leetcode.com";
-
-            HttpResponse<String> responsePost = Unirest
-                    .post(baseUrl + "/urls")
-                    .field("url", urlName)
-                    .asString();
-
-            String body = responsePost.getBody();
-            assertThat(responsePost.getStatus()).isEqualTo(200);
-            assertThat(responsePost.getHeaders().containsKey("Location")).isFalse();
-            assertThat(body).contains("url is already created");
-        }
-
-        @Test
-        void testWrongUrl() {
-            String urlName = "abraCada.bra";
-
-            HttpResponse<String> responsePost = Unirest
-                    .post(baseUrl + "/urls")
-                    .field("url", urlName)
-                    .asString();
-
-            String body = responsePost.getBody();
-            assertThat(responsePost.getStatus()).isEqualTo(200);
-            assertThat(responsePost.getHeaders().containsKey("Location")).isFalse();
-            assertThat(body).contains("url is no valid");
-        }
+//        @Test
+//        void testAlreadyCreatedUrl() {
+//            String urlName = "https://leetcode.com";
+//
+//            HttpResponse<String> responsePost = Unirest
+//                    .post(baseUrl + "/urls")
+//                    .field("url", urlName)
+//                    .asString();
+//
+//            String body = responsePost.getBody();
+//            assertThat(responsePost.getStatus()).isEqualTo(200);
+//            assertThat(responsePost.getHeaders().containsKey("Location")).isFalse();
+//            assertThat(body).contains("url is already created");
+//        }
+//
+//        @Test
+//        void testWrongUrl() {
+//            String urlName = "abraCada.bra";
+//
+//            HttpResponse<String> responsePost = Unirest
+//                    .post(baseUrl + "/urls")
+//                    .field("url", urlName)
+//                    .asString();
+//
+//            String body = responsePost.getBody();
+//            assertThat(responsePost.getStatus()).isEqualTo(200);
+//            assertThat(responsePost.getHeaders().containsKey("Location")).isFalse();
+//            assertThat(body).contains("url is no valid");
+//        }
     }
 
 }

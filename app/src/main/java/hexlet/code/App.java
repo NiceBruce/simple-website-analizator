@@ -31,7 +31,7 @@ public class App {
 
     private static void addRoutes(Javalin app) {
 
-        app.get("/", RootController.helloWorld);
+        app.get("/", RootController.greet);
 
         app.routes(() -> {
             path("urls", () -> {
