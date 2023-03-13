@@ -2,7 +2,10 @@ plugins {
     id 'application'
     id 'com.adarshr.test-logger' version '3.0.0'
     id 'checkstyle'
-    id 'io.ebean' version '13.14.1'
+//    new library- work local, but failed on hexletCheck
+//    id 'io.ebean' version '13.14.1'
+//    old version
+    id 'io.ebean' version '13.6.5'
     id 'jacoco'
 }
 
@@ -24,21 +27,30 @@ application {
 
 dependencies {
     implementation 'io.javalin:javalin:5.4.2'
-//    actual render for javalin 5.4.2
     implementation 'io.javalin:javalin-rendering:5.4.2'
     implementation 'org.slf4j:slf4j-simple:1.7.31'
     implementation 'io.javalin.community.ssl:ssl-plugin:5.4.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 
-    implementation 'io.ebean:ebean:13.14.1'
-    implementation 'io.ebean:ebean-ddl-generator:13.14.1'
-    implementation 'io.ebean:ebean-querybean:13.14.1'
-    implementation 'io.ebean:ebean-migration:13.7.0'
+
+// old version
+    implementation 'io.ebean:ebean:13.11.0'
+    implementation 'io.ebean:ebean-ddl-generator:13.11.0'
+    implementation 'io.ebean:ebean-querybean:13.11.0'
+    implementation 'io.ebean:ebean-migration:13.6.2'
     implementation 'io.ebean:ebean-annotation:8.3'
+    annotationProcessor 'io.ebean:querybean-generator:13.11.0'
+
     implementation 'com.h2database:h2:2.1.214'
     implementation 'org.postgresql:postgresql:42.5.4'
-    annotationProcessor 'io.ebean:querybean-generator:13.14.1'
+//    new library- work local, but failed on hexletCheck
+//    implementation 'io.ebean:ebean:13.14.1'
+//    implementation 'io.ebean:ebean-ddl-generator:13.14.1'
+//    implementation 'io.ebean:ebean-querybean:13.14.1'
+//    implementation 'io.ebean:ebean-migration:13.7.0'
+//    implementation 'io.ebean:ebean-annotation:8.3'
+//    annotationProcessor 'io.ebean:querybean-generator:13.14.1'
 
 //    позволяет создавать общие макеты и clear
 //    переиспользовать их
@@ -53,11 +65,17 @@ dependencies {
     implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.8'
     implementation 'javax.activation:activation:1.1.1'
 
+    implementation 'com.konghq:unirest-java:3.13.0'
+    implementation 'org.jsoup:jsoup:1.15.4'
+
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.2'
     testImplementation 'org.assertj:assertj-core:3.24.2'
-    testImplementation 'io.ebean:ebean-test:13.14.1'
+    testImplementation 'io.ebean:ebean-test:12.15.1'
+//    testImplementation 'io.ebean:ebean-test:13.14.1'
     testImplementation 'com.konghq:unirest-java:3.13.0'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:4.10.0'
+    testImplementation 'com.squareup.okhttp3:okhttp:4.10.0'
 }
 
 test {
