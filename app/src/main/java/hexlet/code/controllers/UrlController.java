@@ -18,6 +18,13 @@ public class UrlController {
         }
     }
 
+    public static String getCorrectUrlName(String urlsNameFromForm) throws MalformedURLException {
+        URL urls = new URL(urlsNameFromForm);
+        String urlWithoutPort = urls.getProtocol() + "://" + urls.getHost();
+        String urlWithPort = urlWithoutPort + ":" + urls.getPort();
+        return urls.getPort() == -1 ? urlWithoutPort : urlWithPort;
+    }
+
     public static Handler listUrl = ctx -> {
         List<Url> urls = new QUrl()
                 .orderBy()
@@ -40,12 +47,10 @@ public class UrlController {
     };
 
     public static Handler createUrl = ctx -> {
-        String urltNameFromForm = ctx.formParam("url");
+        String urlsNameFromForm = ctx.formParam("url");
 
-        if (isValidUrl(urltNameFromForm)) {
-            URL urls = new URL(urltNameFromForm);
-            String urlName = urls.getPort() == -1 ? urls.getProtocol() + "://" + urls.getHost() :
-                    urls.getProtocol() + "://" + urls.getHost() + ":" + urls.getPort();
+        if (isValidUrl(urlsNameFromForm)) {
+            String urlName = getCorrectUrlName(urlsNameFromForm);
 
             Url url = new QUrl()
                     .name.equalTo(urlName)
@@ -62,7 +67,7 @@ public class UrlController {
             }
 
         } else {
-            ctx.sessionAttribute("flash", "url NO VALID!");
+            ctx.sessionAttribute("flash", "url is no valid");
             ctx.render("index.html");
         }
     };
