@@ -13,10 +13,35 @@ layout:decorate="~{layouts/application.html}">
       <td>Id</td><td th:text="*{url.id}">1</td>
     </tr>
     <tr>
-      <td>Url's name</td><td th:text="*{url.name}">2</td>
+      <td>Url's name</td><td th:text="*{url.name}">name</td>
     </tr>
     <tr>
-      <td>Date of create</td><td th:text="${#temporals.format(url.createdAt, 'dd/MM/yyyy HH:mm')}">3</td>
+      <td>Date of create</td><td th:text="${#temporals.format(url.createdAt, 'dd/MM/yyyy HH:mm')}">date</td>
+    </tr>
+    </tbody>
+  </table>
+  <h2 class="mt-5">Проверки</h2>
+  <form method="post" th:action="@{/urls/{id}/checks(id=*{url.id})}">
+    <button type="submit" class="btn btn-primary">Запустить проверку</button>
+  </form>
+
+  <table class="table table-bordered table-hover mt-3">
+    <thead>
+    <th class="col-1">ID</th>
+    <th class="col-1">Код ответа</th>
+    <th>title</th>
+    <th>h1</th>
+    <th>description</th>
+    <th class="col-2">Дата проверки</th>
+    </thead>
+    <tbody>
+    <tr th:each="check : ${urlChecks}" th:object="${check}">
+      <td th:text="*{id}">2</td>
+      <td th:text="*{statusCode}">200</td>
+      <td th:text="*{title}">GitHub: Let’s bui...</td>
+      <td th:text="*{h1}">Let’s build from ...</td>
+      <td th:text="*{description}">GitHub is where over 100 million developers sha...</td>
+      <td th:text="*{#temporals.format(createdAt, 'dd/MM/yyyy HH:mm')}"></td>
     </tr>
     </tbody>
   </table>

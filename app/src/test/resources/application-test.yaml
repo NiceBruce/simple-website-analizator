@@ -3,8 +3,11 @@ ebean:
     useDocker: false
     platform: h2
     ddlMode: dropCreate
-    dbName: testDB
+    dbName: test
+#    username: sa
+#    password: sa
+#    url: "jdbc:h2:./test"
   ddl:
     run: true
-#    generate: true
+    generate: true
     seedSql: seed.sql

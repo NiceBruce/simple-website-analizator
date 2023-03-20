@@ -17,17 +17,21 @@
     </p>
     <div class="mb-3">
       <label>Бесплатно проверяйте сайты на SEO пригодность</label>
-      <form class="row g-3" action="/urls" method="post">
-        <div class="col-auto">
-          <label for="inputUrl" class="visually-hidden">url</label>
-          <input
-                  class="form-control"
-                  type="text" name="url" th:value="*{url}"
-                  id="inputUrl" placeholder="url"
-          >
-        </div>
-        <div class="col-auto">
-          <button class="btn btn-primary mb-3" type="submit">Check</button>
+      <form class="rss-form text-body" action="/urls" method="post">
+        <div class="row">
+          <div class="col">
+            <div class="form-floating mb-3">
+              <input
+                      class="form-control"
+                      type="text" name="url" th:value="*{url}"
+                      id="floatingInput" placeholder="url"
+              >
+              <label for="floatingInput">Type URL here</label>
+            </div>
+          </div>
+          <div class="col-auto">
+            <button class="h-200 btn btn-lg btn-primary px-xl-5" type="submit">Check</button>
+          </div>
         </div>
       </form>
     </div>

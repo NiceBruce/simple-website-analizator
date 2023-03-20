@@ -1,21 +1,25 @@
 package hexlet.code;
 
+import hexlet.code.domain.Url;
+import hexlet.code.domain.query.QUrl;
+import io.ebean.DB;
+import io.ebean.Database;
+import io.javalin.Javalin;
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
+import okhttp3.mockwebserver.Dispatcher;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+
 import static org.assertj.core.api.Assertions.assertThat;
-
-import kong.unirest.HttpResponse;
-import kong.unirest.Unirest;
-import io.javalin.Javalin;
-import io.ebean.DB;
-
-import hexlet.code.domain.Url;
-import hexlet.code.domain.query.QUrl;
-import io.ebean.Database;
 
 public final class AppTest {
 
@@ -25,27 +29,51 @@ public final class AppTest {
     }
     private static Javalin app;
     private static String baseUrl;
+    private static Database test;
 
-    private static Database testDB;
+    private static MockWebServer server;
+
+    public static Dispatcher dispatcher = new Dispatcher() {
+            @Override
+            public MockResponse dispatch(RecordedRequest request) throws InterruptedException {
+
+                switch (request.getPath()) {
+                    case "/":
+                        return new MockResponse().setResponseCode(200).setBody("Анализатор страниц");
+                    case "/urls":
+                        return new MockResponse().setResponseCode(200).setBody("https://leetcode.com");
+                    case "/urls/1/checks":
+                        return new MockResponse().setResponseCode(200).setBody("Страница успешно проверена");
+                    case "/urls/2/checks":
+                        return new MockResponse().setResponseCode(200).setBody("Некорректный URL-адрес");
+                    default:
+                        return new MockResponse().setResponseCode(404);
+                }
+            }
+    };
 
     @BeforeAll
-    public static void beforeAll() {
+    public static void beforeAll() throws IOException {
         app = App.getApp();
         app.start(0);
         int port = app.port();
         baseUrl = "http://localhost:" + port;
-        testDB = DB.getDefault();
+        test = DB.getDefault();
+
+        server = new MockWebServer();
+        server.setDispatcher(dispatcher);
     }
 
     @AfterAll
-    public static void afterAll() {
+    public static void afterAll() throws IOException {
+        server.shutdown();
         app.stop();
     }
 
     @BeforeEach
     void beforeEach() {
-        testDB.script().run("/truncate.sql");
-        testDB.script().run("/seed.sql");
+        test.script().run("/cleanTables.sql");
+        test.script().run("/seed.sql");
     }
     @Nested
     class RootTest {
@@ -142,6 +170,38 @@ public final class AppTest {
             assertThat(responsePost.getHeaders().containsKey("Location")).isFalse();
             assertThat(body).contains("url is no valid");
         }
-    }
 
+        @Test
+        void testCheckUrl() throws InterruptedException {
+            String url = server.url("/urls/1/checks").toString();
+
+            HttpResponse<String> response = Unirest
+                    .post(url)
+                    .asString();
+
+            String content = response.getBody();
+
+            RecordedRequest request = server.takeRequest();
+            assertThat("/urls/1/checks").isEqualTo(request.getPath());
+            assertThat("POST").isEqualTo(request.getMethod());
+            assertThat(content).contains("Страница успешно проверена");
+        }
+
+        @Test
+        void testCheckWrongUrl() throws InterruptedException {
+            String url = server.url("/urls/2/checks").toString();
+
+            HttpResponse<String> response = Unirest
+                    .post(url)
+                    .asString();
+
+            String content = response.getBody();
+
+            RecordedRequest request = server.takeRequest();
+            assertThat("/urls/2/checks").isEqualTo(request.getPath());
+            assertThat("POST").isEqualTo(request.getMethod());
+            assertThat(content).contains("Некорректный URL-адрес");
+        }
+    }
 }
+
