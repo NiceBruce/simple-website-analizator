@@ -87,11 +87,6 @@ public final class AppTest {
         test.script().run("/seed.sql");
     }
 
-//    @AfterEach
-//    void afterEach() {
-//        test.script().run("/cleanTables.sql");
-//        test.script().run("/seed.sql");
-//    }
     @Nested
     class RootTest {
         @Test
@@ -185,7 +180,7 @@ public final class AppTest {
             String body = responsePost.getBody();
             assertThat(responsePost.getStatus()).isEqualTo(200);
             assertThat(responsePost.getHeaders().containsKey("Location")).isFalse();
-            assertThat(body).contains("url is no valid");
+            assertThat(body).contains("Введен неправильный URL-адрес");
         }
 
         @Test
