@@ -16,18 +16,14 @@ import static io.javalin.apibuilder.ApiBuilder.post;
 
 public class App {
 
-    private static int getPort() {
-        String port = System.getenv().getOrDefault("PORT", "4896");
-        return Integer.valueOf(port);
-    }
+    public static final int PORT = 4896;
+    public static final String DEVELOPMENT_MODE = "development";
+    public static final String PRODUCTION_MODE = "production";
 
     private static String getMode() {
-        return System.getenv().getOrDefault("APP_ENV", "development");
+        return System.getenv().getOrDefault("APP_ENV", DEVELOPMENT_MODE);
     }
 
-    private static boolean isProduction() {
-        return getMode().equals("production");
-    }
 
 
     private static void addRoutes(Javalin app) {
@@ -57,7 +53,9 @@ public class App {
     public static Javalin getApp() {
 
         Javalin app = Javalin.create(config -> {
-            config.plugins.enableDevLogging();
+            if (!getMode().equals(PRODUCTION_MODE)) {
+                config.plugins.enableDevLogging();
+            }
 
             JavalinThymeleaf.init(getTemplateEngine());
         });
@@ -75,6 +73,6 @@ public class App {
     public static void main(String[] args) {
 
         Javalin app = getApp();
-        app.start(getPort());
+        app.start(PORT);
     }
 }

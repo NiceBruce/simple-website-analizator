@@ -13,10 +13,10 @@ layout:decorate="~{layouts/application.html}">
       <td>Id</td><td th:text="*{url.id}">1</td>
     </tr>
     <tr>
-      <td>Url's name</td><td th:text="*{url.name}">name</td>
+      <td>Имя</td><td th:text="*{url.name}">name</td>
     </tr>
     <tr>
-      <td>Date of create</td><td th:text="${#temporals.format(url.createdAt, 'dd/MM/yyyy HH:mm')}">date</td>
+      <td>Дата создания</td><td th:text="${#temporals.format(url.createdAt, 'dd/MM/yyyy HH:mm')}">date</td>
     </tr>
     </tbody>
   </table>

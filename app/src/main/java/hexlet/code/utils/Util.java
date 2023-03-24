@@ -2,49 +2,86 @@ package hexlet.code.utils;
 
 import hexlet.code.domain.Url;
 import hexlet.code.domain.UrlCheck;
+import io.ebean.DB;
+import io.ebean.Database;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import kong.unirest.UnirestException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.ListIterator;
+
 
 public class Util {
-    public static boolean isValidUrl(String url) throws MalformedURLException {
-        try {
-            new URL(url);
-            return true;
-        } catch (MalformedURLException e) {
-            return false;
+
+    public static final Database DATABASE = DB.getDefault();
+
+    public static Url getUrl(long urlId) {
+        return DATABASE.find(Url.class, urlId);
+    }
+
+    public static List<Url> getUrls() {
+        return DATABASE.find(Url.class).findList();
+    }
+
+    public static List<UrlCheck> getUrlChecks(Url url) {
+
+        List<UrlCheck> urlChecks = url.getUrlChecks();
+        List<UrlCheck> reverseUrlChecks = new ArrayList<>();
+        ListIterator<UrlCheck> listIterator = urlChecks.listIterator(urlChecks.size());
+
+        while (listIterator.hasPrevious()) {
+            UrlCheck urlCheckUnit = listIterator.previous();
+            reverseUrlChecks.add(urlCheckUnit);
         }
+
+        return reverseUrlChecks;
+    }
+
+    public static boolean isExistUrl(String urlName) {
+        return DATABASE.find(Url.class)
+                .where().
+                eq("name", urlName)
+                .findOne() != null;
     }
 
     public static Map<Long, List<Object>> getUrlsWithCheck(List<Url> urlsFromBD) {
         Map<Long, List<Object>> urls = new HashMap<>();
 
         for (Url url : urlsFromBD) {
-            urls.put(url.getId(), List.of(url.getName(),
-                    (url.getUrlCheck().isEmpty()) ? ""
-                            : url.getUrlCheck().get(url.getUrlCheck().size() - 1).getCreatedAt(),
-                    (url.getUrlCheck().isEmpty()) ? ""
-                            : url.getUrlCheck().get(url.getUrlCheck().size() - 1).getStatusCode()));
-        }
+            List<UrlCheck> urlChecks = url.getUrlChecks();
 
+            urls.put(url.getId(), List.of(url.getName(),
+                    (urlChecks.isEmpty()) ? ""
+                            : urlChecks.get(urlChecks.size() - 1).getCreatedAt(),
+                    (urlChecks.isEmpty()) ? ""
+                            : urlChecks.get(urlChecks.size() - 1).getStatusCode()));
+        }
         return urls;
     }
 
     public static String getCorrectUrlName(String urlsNameFromForm) throws MalformedURLException {
-        URL urls = new URL(urlsNameFromForm);
 
-        String urlWithoutPort = urls.getProtocol() + "://" + urls.getHost();
-        String urlWithPort = urlWithoutPort + ":" + urls.getPort();
+        try {
+            URL urls = new URL(urlsNameFromForm);
+            String urlWithoutPort = urls.getProtocol() + "://" + urls.getHost();
+            String urlWithPort = urlWithoutPort + ":" + urls.getPort();
+            return urls.getPort() == -1 ? urlWithoutPort : urlWithPort;
 
-        return urls.getPort() == -1 ? urlWithoutPort : urlWithPort;
+        } catch (MalformedURLException exceptionMessage) {
+            Logger logger = LoggerFactory.getLogger(Url.class);
+            logger.error("ВНИМАНИЕ! ВВЕДЕН НЕПРАВИЛЬНЫЙ URL", new Exception(exceptionMessage));
+            return "wrong url";
+        }
     }
 
     public static HttpResponse<String> getResponse(Url url) throws UnirestException {
