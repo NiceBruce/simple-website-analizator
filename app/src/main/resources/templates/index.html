@@ -8,32 +8,39 @@
   <title>Page Analizator</title>
   <link rel='stylesheet' href='/webjars/bootstrap/5.1.1/css/bootstrap.min.css'>
   <script src="/webjars/bootstrap/5.1.1/js/bootstrap.bundle.min.js"></script>
+  <style>
+    .form-control:focus {
+      border-color: #c7c4c4;
+      box-shadow: 0 0 0 0.2rem rgba(196, 191, 203, 0.25);
+    }
+  </style>
 </head>
+
 <body>
 <section style="padding-top: 200px" layout:fragment="content">
-  <div>
-    <p>
-    <h1 style="text-align: center">Анализатор страниц</h1>
-    </p>
-    <div class="mb-3">
-      <label>Бесплатно проверяйте сайты на SEO пригодность</label>
-      <form class="rss-form text-body" action="/urls" method="post">
-        <div class="row">
-          <div class="col">
-            <div class="form-floating mb-3">
-              <input
-                      class="form-control"
-                      type="text" name="url" th:value="*{url}"
-                      id="floatingInput" placeholder="url"
-              >
-              <label for="floatingInput">Введите адрес сайта</label>
+  <div class="container-fluid p-5">
+    <div class="row">
+      <div class="col-md-10 col-lg-8 mx-auto text-black">
+        <h1 class="display-3 mb-0">Анализатор страниц</h1>
+        <p class="text-secondary">Бесплатно проверяйте сайты на SEO пригодность</p>
+        <form class="rss-form text-body" action="/urls" method="post">
+          <div class="row">
+            <div class="col">
+              <div class="form-floating">
+                <input
+                        class="form-control w-100"
+                        type="text" name="url" th:value="*{url}"
+                        id="floatingInput" placeholder="url"
+                >
+                <label for="floatingInput" class="inputLabel">Введите адрес сайта</label>
+              </div>
+            </div>
+            <div class="col-auto">
+              <button type="submit" class="h-100 btn-lg btn-outline-dark px-sm-5">Проверить</button>
             </div>
           </div>
-          <div class="col-auto">
-            <button class="h-200 btn btn-lg btn-primary px-xl-5" type="submit">Check</button>
-          </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   </div>
 </section>

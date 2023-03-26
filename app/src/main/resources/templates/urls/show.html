@@ -22,7 +22,7 @@ layout:decorate="~{layouts/application.html}">
   </table>
   <h2 class="mt-5">Проверки</h2>
   <form method="post" th:action="@{/urls/{id}/checks(id=*{url.id})}">
-    <button type="submit" class="btn btn-primary">Запустить проверку</button>
+    <button type="submit" class="h-100 btn-lg btn-outline-dark px-sm-5">Запустить проверку</button>
   </form>
 
   <table class="table table-bordered table-hover mt-3">

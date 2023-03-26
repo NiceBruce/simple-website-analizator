@@ -4,6 +4,12 @@
 
 <head>
   <title>Urls</title>
+  <style>
+    .link-dark:hover {
+      background-color: bisque;
+    }
+
+  </style>
 </head>
 <section layout:fragment="content">
   <table class="table">
@@ -17,7 +23,7 @@
       <tr th:each="url : ${urls}">
         <td th:text="${url.key}"/>
         <td>
-          <a th:text="${url.value[0]}" th:href="@{/urls/{id}(id=*{url.key})}"></a>
+          <a th:text="${url.value[0]}" th:href="@{/urls/{id}(id=*{url.key})}" class="link-dark"></a>
         </td>
         <td th:text="(${!url.value[1].equals('')}? ${#temporals.format(url.value[1], 'dd/MM/yyyy HH:mm')} : '')"/>
         <td th:text="${url.value[2]}"/>

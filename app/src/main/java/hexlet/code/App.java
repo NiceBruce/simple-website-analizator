@@ -24,8 +24,6 @@ public class App {
         return System.getenv().getOrDefault("APP_ENV", DEVELOPMENT_MODE);
     }
 
-
-
     private static void addRoutes(Javalin app) {
 
         app.get("/", RootController.greet);
