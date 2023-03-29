@@ -2,8 +2,7 @@ package hexlet.code.utils;
 
 import hexlet.code.domain.Url;
 import hexlet.code.domain.UrlCheck;
-import io.ebean.DB;
-import io.ebean.Database;
+import hexlet.code.domain.query.QUrl;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import kong.unirest.UnirestException;
@@ -14,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,15 +22,18 @@ import java.util.ListIterator;
 
 
 public class Util {
-
-    public static final Database DATABASE = DB.getDefault();
-
+    public static final Logger LOGGER = LoggerFactory.getLogger(Url.class);
     public static Url getUrl(long urlId) {
-        return DATABASE.find(Url.class, urlId);
+        return new QUrl()
+                .id.equalTo(urlId)
+                .findOne();
     }
 
     public static List<Url> getUrls() {
-        return DATABASE.find(Url.class).findList();
+        return new QUrl()
+                .orderBy()
+                .id.asc()
+                .findList();
     }
 
     public static List<UrlCheck> getUrlChecks(Url url) {
@@ -47,10 +50,9 @@ public class Util {
         return reverseUrlChecks;
     }
 
-    public static boolean isExistUrl(String urlName) {
-        return DATABASE.find(Url.class)
-                .where().
-                eq("name", urlName)
+    public static boolean ifExistsUrl(String urlName) {
+        return new QUrl()
+                .name.equalTo(urlName)
                 .findOne() != null;
     }
 
@@ -60,12 +62,16 @@ public class Util {
         for (Url url : urlsFromBD) {
             List<UrlCheck> urlChecks = url.getUrlChecks();
 
-            urls.put(url.getId(), List.of(url.getName(),
-                    (urlChecks.isEmpty()) ? ""
-                            : urlChecks.get(urlChecks.size() - 1).getCreatedAt(),
-                    (urlChecks.isEmpty()) ? ""
-                            : urlChecks.get(urlChecks.size() - 1).getStatusCode()));
+            if (!urlChecks.isEmpty()) {
+                Instant urlCreatedDate = urlChecks.get(urlChecks.size() - 1).getCreatedAt();
+                int urlStatusCode = urlChecks.get(urlChecks.size() - 1).getStatusCode();
+
+                urls.put(url.getId(), List.of(url.getName(), urlCreatedDate, urlStatusCode));
+            } else {
+                urls.put(url.getId(), List.of(url.getName(), "", ""));
+            }
         }
+
         return urls;
     }
 
@@ -73,14 +79,11 @@ public class Util {
 
         try {
             URL urls = new URL(urlsNameFromForm);
-            String urlWithoutPort = urls.getProtocol() + "://" + urls.getHost();
-            String urlWithPort = urlWithoutPort + ":" + urls.getPort();
-            return urls.getPort() == -1 ? urlWithoutPort : urlWithPort;
+            return urls.getProtocol() + "://" + urls.getAuthority();
 
         } catch (MalformedURLException exceptionMessage) {
-            Logger logger = LoggerFactory.getLogger(Url.class);
-            logger.error("ВНИМАНИЕ! ВВЕДЕН НЕПРАВИЛЬНЫЙ URL", new Exception(exceptionMessage));
-            return "wrong url";
+            LOGGER.error("ВНИМАНИЕ! ВВЕДЕН НЕПРАВИЛЬНЫЙ URL", new Exception(exceptionMessage));
+            return null;
         }
     }
 
@@ -98,6 +101,20 @@ public class Util {
         return Jsoup.parse(body);
     }
 
+    public static List<String> getHtmlTags(Document doc) {
+
+        String title = (doc.title() == null) ? "" : doc.title();
+
+        String h1 = (doc.select("h1").first() == null) ? ""
+                : doc.select("h1").first().text();
+
+        String description = (doc.select("meta[name=description]").isEmpty()) ? ""
+                : doc.select("meta[name=description]").get(0)
+                .attr("content");
+
+        return List.of(title, h1, description);
+    }
+
     public static UrlCheck parseHTML(Url url) {
 
         HttpResponse<String> response = getResponse(url);
@@ -105,15 +122,8 @@ public class Util {
 
         Document doc = getHtmlDocument(response);
 
-        String title = (doc.title() == null) ? "" : doc.title();
+        List<String> htmlTags = getHtmlTags(doc);
 
-        String description = (doc.select("meta[name=description]").isEmpty()) ? ""
-                : doc.select("meta[name=description]").get(0)
-                        .attr("content");
-
-        String h1 = (doc.select("h1").first() == null) ? ""
-                : doc.select("h1").first().text();
-
-        return new UrlCheck(statusCode, title, h1, description, url);
+        return new UrlCheck(statusCode, htmlTags.get(0), htmlTags.get(1), htmlTags.get(2), url);
     }
 }

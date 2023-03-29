@@ -3,8 +3,9 @@ package hexlet.code.domain;
 import io.ebean.Model;
 import io.ebean.annotation.NotNull;
 import io.ebean.annotation.WhenCreated;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,18 +16,24 @@ import java.time.Instant;
 import java.util.List;
 
 @Entity
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 public final class Url extends Model {
     @Id @GeneratedValue
     private long id;
 
     @NotNull
-    private final String name;
+    private String name;
 
     @WhenCreated
     private Instant createdAt;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<UrlCheck> urlChecks;
+
+
+    public Url(String urlName) {
+        this.name = urlName;
+    }
 }

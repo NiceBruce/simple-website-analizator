@@ -6,18 +6,16 @@ import io.javalin.http.Handler;
 import kong.unirest.UnirestException;
 
 import java.util.List;
+
 import static hexlet.code.utils.Util.getUrl;
 import static hexlet.code.utils.Util.getUrls;
 import static hexlet.code.utils.Util.getUrlsWithCheck;
 import static hexlet.code.utils.Util.getUrlChecks;
 import static hexlet.code.utils.Util.getCorrectUrlName;
-import static hexlet.code.utils.Util.isExistUrl;
+import static hexlet.code.utils.Util.ifExistsUrl;
 import static hexlet.code.utils.Util.parseHTML;
 
-
 public final class UrlController {
-
-
     public static Handler listUrl = ctx -> {
         ctx.attribute("urls", getUrlsWithCheck(getUrls()));
         ctx.render("urls/index.html");
@@ -38,29 +36,30 @@ public final class UrlController {
 
         String urlName = getCorrectUrlName(ctx.formParam("url"));
 
-        if (urlName.equals("wrong url")) {
+        if (urlName == null) {
             ctx.sessionAttribute("flash", "Введен неправильный URL-адрес");
             ctx.sessionAttribute("flash-type", "danger");
             ctx.render("index.html");
-        } else {
-            if (isExistUrl(urlName)) {
-                ctx.sessionAttribute("flash", "Страница уже существует");
-                ctx.sessionAttribute("flash-type", "danger");
-                ctx.render("index.html");
-            } else {
-                Url url = new Url(urlName);
-                url.save();
-                ctx.sessionAttribute("flash", "Страница успешно добавлена");
-                ctx.sessionAttribute("flash-type", "success");
-                ctx.redirect("/urls");
-            }
+            return;
         }
+
+        if (ifExistsUrl(urlName)) {
+            ctx.sessionAttribute("flash", "Страница уже существует");
+            ctx.sessionAttribute("flash-type", "danger");
+            ctx.render("index.html");
+            return;
+        }
+
+        Url url = new Url(urlName);
+        url.save();
+        ctx.sessionAttribute("flash", "Страница успешно добавлена");
+        ctx.sessionAttribute("flash-type", "success");
+        ctx.redirect("/urls");
     };
 
     public static Handler checkUrl = ctx -> {
 
         long id = ctx.pathParamAsClass("id", Long.class).getOrDefault(null);
-
         Url url = getUrl(id);
 
         try {
