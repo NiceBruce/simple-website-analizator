@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,12 +60,16 @@ public class Util {
         for (Url url : urlsFromBD) {
             List<UrlCheck> urlChecks = url.getUrlChecks();
 
-            String urlCreatedDate = urlChecks.isEmpty()
-                    ? "" : urlChecks.get(urlChecks.size() - 1).getCreatedAt().toString();
+            Instant urlCreatedDate = urlChecks.isEmpty()
+                    ? null : urlChecks.get(urlChecks.size() - 1).getCreatedAt();
             String urlStatusCode = urlChecks.isEmpty()
                     ? "" : Integer.toString(urlChecks.get(urlChecks.size() - 1).getStatusCode());
 
-            urls.put(url.getId(), List.of(url.getName(), urlCreatedDate, urlStatusCode));
+            urls.put(url.getId(), new ArrayList<>() {{
+                    add(url.getName());
+                    add(urlCreatedDate);
+                    add(urlStatusCode);
+                }});
         }
 
         return urls;

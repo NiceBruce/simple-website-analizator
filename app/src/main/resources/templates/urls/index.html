@@ -25,7 +25,7 @@
         <td>
           <a th:text="${url.value[0]}" th:href="@{/urls/{id}(id=*{url.key})}" class="link-dark"></a>
         </td>
-        <td th:text="(${!url.value[1].equals('')}? ${#temporals.format(url.value[1], 'dd/MM/yyyy HH:mm')} : '')"/>
+        <td th:text="(${url.value[1] == null}? '' : ${#temporals.format(url.value[1], 'dd/MM/yyyy HH:mm')})"/>
         <td th:text="${url.value[2]}"/>
       </tr>
     </tbody>
